@@ -15,21 +15,26 @@ module.exports = {
             },
             rua: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             numero: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
+                allowNull: false,
             },
             complemento: {
                 type: Sequelize.STRING,
             },
             estado: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             cidade: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             cep: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             created_at: {
                 type: Sequelize.DATE,
