@@ -28,8 +28,16 @@ module.exports = {
             cidade: {
                 type: Sequelize.STRING,
             },
-            CEP: {
+            cep: {
                 type: Sequelize.STRING,
+            },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+            },
+            updated_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
             },
         });
     },

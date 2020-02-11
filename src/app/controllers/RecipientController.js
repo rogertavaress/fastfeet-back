@@ -10,7 +10,7 @@ class RecipientController {
             complemento: Yup.string(),
             estado: Yup.string(),
             cidade: Yup.string(),
-            CEP: Yup.string(),
+            cep: Yup.string(),
         });
 
         if (!(await schema.isValid(req.body))) {
@@ -43,7 +43,7 @@ class RecipientController {
             return res.status(400).json({ message: 'Erro de validação!' });
         }
 
-        const recipient = await Recipient.findByPk(req.id);
+        const recipient = await Recipient.findByPk(req.body.id);
 
         if (!recipient) {
             return res.status(400).json({

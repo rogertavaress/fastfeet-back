@@ -10,11 +10,15 @@ class Recipient extends Model {
                 complemento: Sequelize.STRING,
                 estado: Sequelize.STRING,
                 cidade: Sequelize.STRING,
-                CEP: Sequelize.STRING,
+                cep: Sequelize.STRING,
             },
             {
                 sequelize,
             }
         );
+
+        return this;
     }
 }
+
+export default Recipient;
