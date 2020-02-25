@@ -8,6 +8,7 @@ import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
 import CourierController from './app/controllers/CourierController';
 import FileController from './app/controllers/FileController';
+import OrderController from './app/controllers/OrderController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -28,5 +29,7 @@ routes.get('/Courier', CourierController.index);
 routes.post('/Courier', CourierController.store);
 
 routes.post('/Files', upload.single('file'), FileController.store);
+
+routes.post('/Orders', OrderController.store);
 
 export default routes;
