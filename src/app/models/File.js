@@ -1,12 +1,11 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Courier extends Model {
+class File extends Model {
     static init(sequelize) {
         super.init(
             {
                 name: Sequelize.STRING,
-                avatar_id: Sequelize.INTEGER,
-                email: Sequelize.STRING,
+                path: Sequelize.STRING,
             },
             {
                 sequelize,
@@ -15,10 +14,6 @@ class Courier extends Model {
 
         return this;
     }
-
-    static associate(models) {
-        this.belongsTo(models.File, { foreignKey: 'avatar_id' });
-    }
 }
 
-export default Courier;
+export default File;
