@@ -28,6 +28,8 @@ class RecipientController {
     }
 
     async update(req, res) {
+        const { id } = req.params;
+
         const schema = Yup.object().shape({
             name: Yup.string(),
             rua: Yup.string(),
@@ -42,7 +44,7 @@ class RecipientController {
             return res.status(400).json({ message: 'Erro de validação!' });
         }
 
-        const recipient = await Recipient.findByPk(req.params.id);
+        const recipient = await Recipient.findByPk(id);
 
         if (!recipient) {
             return res.status(400).json({

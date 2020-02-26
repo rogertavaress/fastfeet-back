@@ -32,5 +32,7 @@ routes.post('/Files', upload.single('file'), FileController.store);
 
 routes.post('/Orders', OrderController.store);
 routes.get('/Orders', OrderController.index);
+routes.put('/Orders/:id', OrderController.update);
+routes.delete('/Orders/:id', OrderController.delete);
 
 export default routes;

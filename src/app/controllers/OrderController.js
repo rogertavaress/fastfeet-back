@@ -11,7 +11,7 @@ class OrderController {
         const { page = 1 } = req.query;
 
         const orders = await Order.findAll({
-            order: ['start_date', 'recipient_id'],
+            order: ['recipient_id'],
             attributes: [
                 'id',
                 'product',
@@ -94,6 +94,79 @@ class OrderController {
         return res.json({
             message: 'Cadastrado com sucesso',
             order,
+        });
+    }
+
+    async update(req, res) {
+        const { id } = req.params;
+
+        const schema = Yup.object().shape({
+            recipient_id: Yup.number(),
+            deliveryman_id: Yup.number(),
+            signature_id: Yup.number(),
+            product: Yup.string(),
+            canceled_at: Yup.date(),
+            start_date: Yup.date(),
+            end_date: Yup.date(),
+        });
+
+        if (!(await schema.isValid(req.body))) {
+            return res.status(400).json({
+                error: 'Erro de validação',
+            });
+        }
+
+        const order = await Order.findByPk(id);
+
+        if (!order) {
+            return res.status(400).json({
+                message: 'Order não encontrada.',
+            });
+        }
+
+        if (req.body.recipient_id) {
+            if (await Recipient.findByPk(req.body.recipient_id)) {
+                return res.status(400).json({
+                    error: 'Não existe destinatário com o ID informado',
+                });
+            }
+        }
+
+        if (req.body.deliveryman_id) {
+            if (await Courier.findByPk(req.body.deliveryman_id)) {
+                return res.status(400).json({
+                    error: 'Não existe entregador com o ID informado',
+                });
+            }
+        }
+
+        const orderAtualizada = await order.update(req.body);
+
+        return res.json({
+            message: 'Atualizado com sucesso!',
+            data: orderAtualizada,
+        });
+    }
+
+    async delete(req, res) {
+        const { id } = req.params;
+
+        const order = await Order.findByPk(id);
+
+        if (!order) {
+            return res.status(400).json({
+                error: 'Order não encontrada',
+            });
+        }
+
+        await Order.destroy({
+            where: {
+                id,
+            },
+        });
+
+        return res.json({
+            message: 'Order removida',
         });
     }
 }
