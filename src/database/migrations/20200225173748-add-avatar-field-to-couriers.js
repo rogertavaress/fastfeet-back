@@ -2,7 +2,7 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.changeColumn('couriers', 'avatar_id', {
+        return queryInterface.changeColumn('deliverymen', 'avatar_id', {
             type: Sequelize.INTEGER,
             references: { model: 'files', key: 'id' },
             onUpdate: 'CASCADE',
@@ -12,7 +12,7 @@ module.exports = {
     },
 
     down: queryInterface => {
-        return queryInterface.changeColumn('couriers', 'avatar_id', {
+        return queryInterface.changeColumn('deliverymen', 'avatar_id', {
             type: Sequelize.INTEGER,
             allowNull: true,
         });

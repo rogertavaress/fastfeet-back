@@ -1,5 +1,5 @@
 import Order from '../models/Order';
-import Courier from '../models/Courier';
+import DeliveryMan from '../models/DeliveryMan';
 import Recipient from '../models/Recipient';
 import File from '../models/File';
 import * as Yup from 'yup';
@@ -28,8 +28,8 @@ class OrderController {
                     attributes: ['id', 'name'],
                 },
                 {
-                    model: Courier,
-                    as: 'courier',
+                    model: DeliveryMan,
+                    as: 'deliveryMan',
                     attributes: ['id', 'name', 'email'],
                 },
                 {
@@ -75,9 +75,9 @@ class OrderController {
             });
         }
 
-        const courier = await Courier.findByPk(req.body.deliveryman_id);
+        const deliveryMan = await DeliveryMan.findByPk(req.body.deliveryman_id);
 
-        if (!courier) {
+        if (!deliveryMan) {
             return res.status(400).json({
                 error: 'Não existe entregador com o ID informado',
             });
@@ -86,7 +86,7 @@ class OrderController {
         const order = await Order.create(req.body);
 
         await Mail.sendMail({
-            to: `${courier.name} <${courier.email}>`,
+            to: `${deliveryMan.name} <${deliveryMan.email}>`,
             subject: 'Produto Disponível',
             text: `Produto disponível: ${order.product}`,
         });
@@ -133,7 +133,7 @@ class OrderController {
         }
 
         if (req.body.deliveryman_id) {
-            if (await Courier.findByPk(req.body.deliveryman_id)) {
+            if (await DeliveryMan.findByPk(req.body.deliveryman_id)) {
                 return res.status(400).json({
                     error: 'Não existe entregador com o ID informado',
                 });

@@ -1,17 +1,17 @@
-import Courier from '../models/Courier';
+import DeliveryMan from '../models/DeliveryMan';
 import * as Yup from 'yup';
 
-class CourierController {
+class DeliveryManController {
     async index(req, res) {
         const { page = 1 } = req.query;
 
-        const couriers = await Courier.findAll({
+        const deliveryMan = await DeliveryMan.findAll({
             order: ['name'],
             limit: 20,
             offset: (page - 1) * 20,
         });
 
-        return res.json(couriers);
+        return res.json(deliveryMan);
     }
 
     async store(req, res) {
@@ -24,7 +24,7 @@ class CourierController {
             return res.status(400).json({ error: 'Erro de validação' });
         }
 
-        const { name, email } = await Courier.create(req.body);
+        const { name, email } = await DeliveryMan.create(req.body);
 
         return res.json({ name, email });
     }
@@ -42,31 +42,31 @@ class CourierController {
             return res.status(400).json({ error: 'Erro de validação' });
         }
 
-        const courierAntigo = await Courier.findByPk(id);
+        const deliveryManAntigo = await DeliveryMan.findByPk(id);
 
-        if (!courierAntigo) {
+        if (!deliveryManAntigo) {
             return res
                 .status(400)
                 .json({ error: `Não existe entregador com o id:${id}` });
         }
 
-        const courier = await Courier.update(req.body);
+        const deliveryMan = await DeliveryMan.update(req.body);
 
-        return res.json(courier);
+        return res.json(deliveryMan);
     }
 
     async delete(req, res) {
         const { id } = req.params;
 
-        const courierAntigo = await Courier.findByPk(id);
+        const deliveryManAntigo = await DeliveryMan.findByPk(id);
 
-        if (!courierAntigo) {
+        if (!deliveryManAntigo) {
             return res
                 .status(400)
                 .json({ error: `Não existe entregador com o id:${id}` });
         }
 
-        Courier.destroy({
+        DeliveryMan.destroy({
             where: {
                 id,
             },
@@ -74,4 +74,4 @@ class CourierController {
     }
 }
 
-export default new CourierController();
+export default new DeliveryManController();
