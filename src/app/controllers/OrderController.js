@@ -3,8 +3,9 @@ import DeliveryMan from '../models/DeliveryMan';
 import Recipient from '../models/Recipient';
 import File from '../models/File';
 import * as Yup from 'yup';
-import { getHours } from 'date-fns';
+import { getHours, startOfDay, endOfDay, parseISO } from 'date-fns';
 import Mail from '../../lib/Mail';
+import { Op } from 'sequelize';
 
 class OrderController {
     async index(req, res) {
@@ -137,6 +138,32 @@ class OrderController {
                 return res.status(400).json({
                     error: 'Não existe entregador com o ID informado',
                 });
+            }
+        }
+
+        if (req.body.start_date) {
+            const ordersForDeliveryManDay = await Order.findAll({
+                where: {
+                    deliveryman_id: order.deliveryman_id,
+                    start_date: {
+                        [Op.between]: [
+                            startOfDay(parseISO(req.body.start_date)),
+                            endOfDay(parseISO(req.body.start_date)),
+                        ],
+                    },
+                    id: {
+                        [Op.ne]: id,
+                    },
+                },
+            });
+
+            if (ordersForDeliveryManDay.length >= 5) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            '5 é o limite máximo de Encomendas para o mesmo dia',
+                    });
             }
         }
 
