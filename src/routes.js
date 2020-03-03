@@ -8,6 +8,7 @@ import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
 import DeliveryManController from './app/controllers/DeliveryManController';
 import DeliveriesController from './app/controllers/DeliveriesController';
+import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import FileController from './app/controllers/FileController';
 import OrderController from './app/controllers/OrderController';
 
@@ -37,5 +38,8 @@ routes.post('/Orders', OrderController.store);
 routes.get('/Orders', OrderController.index);
 routes.put('/Orders/:id', OrderController.update);
 routes.delete('/Orders/:id', OrderController.delete);
+
+routes.get('/Delivery/:id/problems', DeliveryProblemController.index);
+routes.post('/Delivery/:id/problems', DeliveryProblemController.store);
 
 export default routes;
