@@ -2,7 +2,9 @@ import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
 import * as Yup from 'yup';
 import DeliveryMan from '../models/DeliveryMan';
-import Mail from '../../lib/Mail';
+import Recipient from '../models/Recipient';
+import Queue from '../../lib/Queue';
+import CancellationMail from '../Jobs/CancellationMail';
 
 class DeliveryProblemController {
     async index(req, res) {
@@ -55,6 +57,10 @@ class DeliveryProblemController {
                     model: DeliveryMan,
                     as: 'deliveryMan',
                 },
+                {
+                    model: Recipient,
+                    as: 'recipient',
+                },
             ],
         });
 
@@ -70,17 +76,8 @@ class DeliveryProblemController {
             },
         });
 
-        await Mail.sendMail({
-            to: `${orderAntiga.deliveryMan.name} <${orderAntiga.deliveryMan.email}>`,
-            subject: 'Encomenda Cancelada',
-            template: 'cancellation',
-            context: {
-                // provider: appointment.provider.name,
-                // user: appointment.user.name,
-                // date: format(appointment.date, "dd 'de' MMMM', às' H:MM'h'", {
-                //     locale: pt,
-                // }),
-            },
+        await Queue.add(CancellationMail.key, {
+            order: orderAntiga,
         });
 
         return res.json({ message: 'Removido com sucesso.' });
