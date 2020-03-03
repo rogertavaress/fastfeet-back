@@ -1,6 +1,8 @@
 import DeliveryProblem from '../models/DeliveryProblem';
 import Order from '../models/Order';
 import * as Yup from 'yup';
+import DeliveryMan from '../models/DeliveryMan';
+import Mail from '../../lib/Mail';
 
 class DeliveryProblemController {
     async index(req, res) {
@@ -42,6 +44,46 @@ class DeliveryProblemController {
         });
 
         return res.json(problem);
+    }
+
+    async delete(req, res) {
+        const { id } = req.params;
+
+        const orderAntiga = await Order.findByPk(id, {
+            include: [
+                {
+                    model: DeliveryMan,
+                    as: 'deliveryMan',
+                },
+            ],
+        });
+
+        if (!orderAntiga) {
+            return res
+                .status(400)
+                .json({ error: `Não existe encomenda com o id:${id}` });
+        }
+
+        await Order.destroy({
+            where: {
+                id,
+            },
+        });
+
+        await Mail.sendMail({
+            to: `${orderAntiga.deliveryMan.name} <${orderAntiga.deliveryMan.email}>`,
+            subject: 'Encomenda Cancelada',
+            template: 'cancellation',
+            context: {
+                // provider: appointment.provider.name,
+                // user: appointment.user.name,
+                // date: format(appointment.date, "dd 'de' MMMM', às' H:MM'h'", {
+                //     locale: pt,
+                // }),
+            },
+        });
+
+        return res.json({ message: 'Removido com sucesso.' });
     }
 }
 export default new DeliveryProblemController();

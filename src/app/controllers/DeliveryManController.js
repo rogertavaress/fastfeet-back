@@ -66,11 +66,13 @@ class DeliveryManController {
                 .json({ error: `Não existe entregador com o id:${id}` });
         }
 
-        DeliveryMan.destroy({
+        await DeliveryMan.destroy({
             where: {
                 id,
             },
         });
+
+        return res.json({ message: 'Removido com sucesso.' });
     }
 }
 
