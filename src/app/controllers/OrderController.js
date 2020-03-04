@@ -2,10 +2,11 @@ import Order from '../models/Order';
 import DeliveryMan from '../models/DeliveryMan';
 import Recipient from '../models/Recipient';
 import File from '../models/File';
+import Queue from '../../lib/Queue';
 import * as Yup from 'yup';
 import { getHours, startOfDay, endOfDay, parseISO } from 'date-fns';
-import Mail from '../../lib/Mail';
 import { Op } from 'sequelize';
+import AvailableProductMail from '../Jobs/AvailableProductMail';
 
 class OrderController {
     async index(req, res) {
@@ -86,10 +87,10 @@ class OrderController {
 
         const order = await Order.create(req.body);
 
-        await Mail.sendMail({
-            to: `${deliveryMan.name} <${deliveryMan.email}>`,
-            subject: 'Produto Disponível',
-            text: `Produto disponível: ${order.product}`,
+        await Queue.add(AvailableProductMail.key, {
+            order,
+            recipient,
+            deliveryMan,
         });
 
         return res.json({
@@ -158,12 +159,9 @@ class OrderController {
             });
 
             if (ordersForDeliveryManDay.length >= 5) {
-                return res
-                    .status(400)
-                    .json({
-                        error:
-                            '5 é o limite máximo de Encomendas para o mesmo dia',
-                    });
+                return res.status(400).json({
+                    error: '5 é o limite máximo de Encomendas para o mesmo dia',
+                });
             }
         }
 

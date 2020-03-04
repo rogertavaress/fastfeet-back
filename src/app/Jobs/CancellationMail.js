@@ -1,6 +1,4 @@
 import Mail from '../../lib/Mail';
-import { format, parseISO } from 'date-fns';
-import pt from 'date-fns/locale/pt';
 
 class CancellationMail {
     get key() {
@@ -10,8 +8,6 @@ class CancellationMail {
     async handle({ data }) {
         const { order } = data;
 
-        console.log('A fila executou');
-
         await Mail.sendMail({
             to: `${order.deliveryMan.name} <${order.deliveryMan.email}>`,
             subject: 'Encomenda Cancelada',
@@ -20,6 +16,7 @@ class CancellationMail {
                 deliveryMan: order.deliveryMan.name,
                 recipient: order.recipient.name,
                 product: order.product,
+                url: process.env.APP_URL,
             },
         });
     }
